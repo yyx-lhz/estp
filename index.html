@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESTP 前额叶训练营</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">⚡</span>
+    <h1>ESTP 前额叶训练营</h1>
+  </div>
+  <div class="stats-mini">
+    <div class="stat"><span class="label">等级</span><span id="level">Lv.1</span></div>
+    <div class="stat"><span class="label">连续</span><span id="streak">0🔥</span></div>
+    <div class="stat"><span class="label">总分</span><span id="totalScore">0</span></div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="dashboard">📊 仪表盘</button>
+  <button class="tab" data-tab="focus">🍅 专注</button>
+  <button class="tab" data-tab="nback">🧠 工作记忆</button>
+  <button class="tab" data-tab="stroop">🌈 抑制</button>
+  <button class="tab" data-tab="gonogo">🚦 冲动控制</button>
+  <button class="tab" data-tab="breath">🌬️ 呼吸冥想</button>
+</nav>
+
+<main>
+  <!-- 仪表盘 -->
+  <section id="dashboard" class="panel active">
+    <div class="card hero">
+      <h2>今日训练目标</h2>
+      <p class="sub">ESTP 的大脑像 V8 引擎,前额叶就是刹车系统。每天 15 分钟,3 个月看到自己的改变。</p>
+      <ul class="checklist">
+        <li><span id="chkFocus">⬜</span> 专注 1 个番茄钟</li>
+        <li><span id="chkNback">⬜</span> N-Back 训练 1 局</li>
+        <li><span id="chkStroop">⬜</span> Stroop 测试 1 局</li>
+        <li><span id="chkGonogo">⬜</span> Go/No-Go 训练 1 局</li>
+        <li><span id="chkBreath">⬜</span> 4-7-8 呼吸 1 轮</li>
+      </ul>
+      <div class="progress-bar"><div id="dailyProgress" class="progress-fill"></div></div>
+    </div>
+
+    <div class="grid">
+      <div class="card stat-card">
+        <h3>🍅 专注总时长</h3>
+        <p class="big-num"><span id="totalFocusMin">0</span><span class="unit"> 分钟</span></p>
+      </div>
+      <div class="card stat-card">
+        <h3>🧠 N-Back 最高</h3>
+        <p class="big-num"><span id="maxNback">1</span><span class="unit">-back</span></p>
+      </div>
+      <div class="card stat-card">
+        <h3>🌈 Stroop 最佳</h3>
+        <p class="big-num"><span id="bestStroop">--</span><span class="unit"> ms</span></p>
+      </div>
+      <div class="card stat-card">
+        <h3>🚦 Go/No-Go 准确率</h3>
+        <p class="big-num"><span id="bestGonogo">--</span><span class="unit"> %</span></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📅 近 14 天训练记录</h3>
+      <div id="heatmap" class="heatmap"></div>
+    </div>
+
+    <div class="card tip">
+      <h3>💡 今日 ESTP 提示</h3>
+      <p id="dailyTip">点击「换一条」获取建议</p>
+      <button class="btn ghost" id="newTipBtn">换一条</button>
+    </div>
+
+    <div class="card danger">
+      <h3>⚙️ 数据管理</h3>
+      <button class="btn ghost" id="exportBtn">导出数据</button>
+      <button class="btn ghost" id="resetBtn">重置全部进度</button>
+    </div>
+  </section>
+
+  <!-- 专注番茄 -->
+  <section id="focus" class="panel">
+    <div class="card center">
+      <h2>专注番茄钟</h2>
+      <p class="sub">ESTP 容易三分钟热度。先从短时间开始,把"坚持下来"训练成肌肉记忆。</p>
+      <div class="timer-display" id="focusDisplay">05:00</div>
+      <div class="row">
+        <button class="btn small" data-min="5">5 分</button>
+        <button class="btn small" data-min="15">15 分</button>
+        <button class="btn small" data-min="25">25 分</button>
+        <button class="btn small" data-min="45">45 分</button>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="focusStart">开始</button>
+        <button class="btn ghost" id="focusReset">重置</button>
+      </div>
+      <p class="hint">规则:启动后到结束前不能离开此页或刷新,否则视为失败,不计入今日完成。</p>
+      <p id="focusStatus" class="status"></p>
+    </div>
+  </section>
+
+  <!-- N-Back -->
+  <section id="nback" class="panel">
+    <div class="card center">
+      <h2>N-Back 工作记忆</h2>
+      <p class="sub">屏幕上方块会在 9 宫格中跳动。当当前位置和 <b id="nbackN">2</b> 步前一样时,按下「匹配」。</p>
+      <div class="row">
+        <label>难度:
+          <select id="nbackLevel">
+            <option value="1">1-Back (入门)</option>
+            <option value="2" selected>2-Back (推荐)</option>
+            <option value="3">3-Back</option>
+            <option value="4">4-Back (高手)</option>
+          </select>
+        </label>
+        <label>回合数:
+          <select id="nbackRounds">
+            <option value="15">15</option>
+            <option value="20" selected>20</option>
+            <option value="30">30</option>
+          </select>
+        </label>
+      </div>
+      <div class="grid3" id="nbackGrid"></div>
+      <div class="row">
+        <button class="btn primary" id="nbackStart">开始</button>
+        <button class="btn big" id="nbackMatch" disabled>匹配 (空格)</button>
+      </div>
+      <p id="nbackStatus" class="status"></p>
+    </div>
+  </section>
+
+  <!-- Stroop -->
+  <section id="stroop" class="panel">
+    <div class="card center">
+      <h2>Stroop 抑制测试</h2>
+      <p class="sub">屏幕显示一个词,选择它的<b>颜色</b>,而不是它<b>写的内容</b>。这是训练前额叶抑制冲突最经典的任务。</p>
+      <div class="stroop-word" id="stroopWord">准备好了吗?</div>
+      <div class="row" id="stroopButtons"></div>
+      <div class="row">
+        <button class="btn primary" id="stroopStart">开始 (20 题)</button>
+      </div>
+      <p id="stroopStatus" class="status"></p>
+    </div>
+  </section>
+
+  <!-- Go/No-Go -->
+  <section id="gonogo" class="panel">
+    <div class="card center">
+      <h2>Go / No-Go 冲动控制</h2>
+      <p class="sub">看到 <b style="color:#22c55e">绿色圆</b> 立刻按空格(GO),看到 <b style="color:#ef4444">红色方块</b> <b>不要按</b>(NO-GO)。比拼的不是手快,是忍得住。</p>
+      <div class="gonogo-area" id="gonogoArea">
+        <div id="gonogoStimulus"></div>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="gonogoStart">开始 (40 个刺激)</button>
+      </div>
+      <p id="gonogoStatus" class="status"></p>
+    </div>
+  </section>
+
+  <!-- 呼吸 -->
+  <section id="breath" class="panel">
+    <div class="card center">
+      <h2>4-7-8 呼吸冥想</h2>
+      <p class="sub">吸气 4 秒 → 屏息 7 秒 → 呼气 8 秒。激活副交感神经,把"想立刻爆发"的冲动按下来。</p>
+      <div class="breath-circle" id="breathCircle">
+        <span id="breathText">点击开始</span>
+      </div>
+      <div class="row">
+        <label>轮数:
+          <select id="breathRounds">
+            <option value="3">3 轮</option>
+            <option value="4" selected>4 轮</option>
+            <option value="6">6 轮</option>
+            <option value="8">8 轮</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="breathStart">开始</button>
+        <button class="btn ghost" id="breathStop">停止</button>
+      </div>
+      <p id="breathStatus" class="status"></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>所有数据保存在你浏览器本地(localStorage),不上传任何服务器。</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
